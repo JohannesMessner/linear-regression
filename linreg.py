@@ -14,7 +14,16 @@ def main():
     X_test = X[:N_test]
     y_test = y[:N_test]
 
-    draw_bar(y_train)
+    #draw_bar(y_train)
+    print(compute_baseline(y_train, y_test))
+
+
+def compute_baseline(y_train, y_test):
+    # Calculates the mean of all the y-values in the training data and the MSE from that regarding the test data
+    # Used as a baseline for other prediction models
+    predictor = np.mean(y_train)
+    mse = np.sum((y_test - predictor) ** 2) / len(y_test)
+    return mse
 
 
 def draw_bar(ys):
