@@ -14,8 +14,38 @@ def main():
     X_test = X[:N_test]
     y_test = y[:N_test]
 
+    # visualisatin of the data
     #draw_bar(y_train)
-    print(compute_baseline(y_train, y_test))
+    # baseline performance
+    print("Baseline performance error: " + str(compute_baseline(y_train, y_test)))
+
+    # standardizing the inputs
+    X_train_st, std, mean = standardize_training(X_train)
+    X_test_st =  standardize_testing(X_test, std, mean)
+    # predicting
+    mse = linear_prediction_error(X_train_st, y_train, X_test_st, y_test)
+    print("Least Squares prediction error: " + str(mse))
+
+
+def standardize_training(X_train):
+    X_train_st = np.copy(X_train)
+    std = np.std(X_train)
+    mean = np.mean(X_train)
+    X_train_st = (X_train_st - mean) / std
+    return X_train_st, std, mean
+
+
+def standardize_testing(X_test, std, mean):
+    return (X_test - mean) / std
+
+
+def linear_prediction_error(X_train, y_train, X_test, y_test):
+    # calculate weight vector using closed form solution
+    w = np.linalg.inv((X_train.transpose() @ X_train))  @ X_train.transpose() @ y_train
+    # apply linear prediction to test set
+    y_test_hat = X_test @ w
+    # compute mean squared error
+    return np.mean((y_test - y_test_hat) ** 2) / len(y_test)
 
 
 def compute_baseline(y_train, y_test):
